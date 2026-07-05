@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f8b4d9, #fce4f3);
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .calc-wrap {
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(236,72,153,0.25);
+      padding: 30px 24px 24px;
+      width: 320px;
+    }
+
+    .calc-wrap h2 {
+      text-align: center;
+      color: #be185d;
+      margin-bottom: 20px;
+      font-size: 20px;
+      letter-spacing: 1px;
+    }
+
+    #display {
+      width: 100%;
+      background: #fdf2f8;
+      border: 2px solid #f5badc;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 28px;
+      text-align: right;
+      color: #333;
+      margin-bottom: 16px;
+      outline: none;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      padding: 16px;
+      font-size: 18px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .btn-num {
+      background: #fde7f2;
+      color: #be185d;
+    }
+
+    .btn-num:hover { background: #f5badc; }
+
+    .btn-op {
+      background: #ec4899;
+      color: #fff;
+    }
+
+    .btn-op:hover { background: #be185d; }
+
+    .btn-clear {
+      background: #fca5a5;
+      color: #fff;
+    }
+
+    .btn-clear:hover { background: #ef4444; }
+
+    .btn-eq {
+      background: #be185d;
+      color: #fff;
+      grid-column: span 2;
+    }
+
+    .btn-eq:hover { background: #9d174d; }
+
+    .btn-zero { grid-column: span 2; }
+
+    button:active { transform: scale(0.94); }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: #ec4899;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .back-link:hover { color: #be185d; text-decoration: underline; }
+  </style>
+</head>
+<body>
+
+<div class="calc-wrap">
+  <h2>🧮 Calculator</h2>
+  <input type="text" id="display" readonly placeholder="0">
+
+  <div class="buttons">
+    <button class="btn-clear" onclick="clearAll()">AC</button>
+    <button class="btn-op"    onclick="deleteLast()">⌫</button>
+    <button class="btn-op"    onclick="appendVal('%')">%</button>
+    <button class="btn-op"    onclick="appendVal('/')">÷</button>
+
+    <button class="btn-num"   onclick="appendVal('7')">7</button>
+    <button class="btn-num"   onclick="appendVal('8')">8</button>
+    <button class="btn-num"   onclick="appendVal('9')">9</button>
+    <button class="btn-op"    onclick="appendVal('*')">×</button>
+
+    <button class="btn-num"   onclick="appendVal('4')">4</button>
+    <button class="btn-num"   onclick="appendVal('5')">5</button>
+    <button class="btn-num"   onclick="appendVal('6')">6</button>
+    <button class="btn-op"    onclick="appendVal('-')">−</button>
+
+    <button class="btn-num"   onclick="appendVal('1')">1</button>
+    <button class="btn-num"   onclick="appendVal('2')">2</button>
+    <button class="btn-num"   onclick="appendVal('3')">3</button>
+    <button class="btn-op"    onclick="appendVal('+')">+</button>
+
+    <button class="btn-num btn-zero" onclick="appendVal('0')">0</button>
+    <button class="btn-num"   onclick="appendVal('.')">.</button>
+    <button class="btn-eq"    onclick="calculate()">=</button>
+  </div>
+
+  <a class="back-link" href="../../index.html">← Back to Portfolio</a>
+</div>
+
+<script>
+  const display = document.getElementById('display');
+
+  function appendVal(val) {
+    if (display.value === '0' && val !== '.') display.value = '';
+    display.value += val;
+  }
+
+  function clearAll() { display.value = '0'; }
+
+  function deleteLast() {
+    display.value = display.value.length > 1
+      ? display.value.slice(0, -1)
+      : '0';
+  }
+
+  function calculate() {
+    try {
+      let result = Function('"use strict"; return (' + display.value + ')')();
+      display.value = parseFloat(result.toFixed(10)).toString();
+    } catch {
+      display.value = 'Error';
+      setTimeout(() => display.value = '0', 1200);
+    }
+  }
+
+  document.addEventListener('keydown', e => {
+    if ('0123456789.+-*/%'.includes(e.key)) appendVal(e.key);
+    else if (e.key === 'Enter') calculate();
+    else if (e.key === 'Backspace') deleteLast();
+    else if (e.key === 'Escape') clearAll();
+  });
+</script>
+</body>
+</html>
